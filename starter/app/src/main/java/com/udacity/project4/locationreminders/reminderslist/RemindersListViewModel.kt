@@ -27,23 +27,12 @@ class RemindersListViewModel(
             val result = dataSource.getReminders()
             showLoading.postValue(false)
             when (result) {
-                is Result.Success<*> -> {
-                    val dataList = ArrayList<ReminderDataItem>()
-                    dataList.addAll((result.data as List<ReminderDTO>).map { reminder ->
-                        //map the reminder data from the DB to the be ready to be displayed on the UI
-                        ReminderDataItem(
-                            reminder.title,
-                            reminder.description,
-                            reminder.location,
-                            reminder.latitude,
-                            reminder.longitude,
-                            reminder.id
-                        )
-                    })
-                    remindersList.value = dataList
+                is Result.Success -> {
+                    //map the reminder data from the DB to the be ready to be displayed on the UI
+                    val reminders = result.data.map { reminder -> reminder.asDomain() }
+                    remindersList.value = reminders
                 }
-                is Result.Error ->
-                    showSnackBar.value = result.message
+                is Result.Error -> showSnackBar.value = result.message
             }
 
             //check if no data has to be shown
@@ -55,6 +44,18 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value = remindersList.value == null || remindersList.value!!.isEmpty()
+        showNoData.value = remindersList.value.isNullOrEmpty()
     }
+
+    private fun ReminderDTO.asDomain(): ReminderDataItem {
+        return ReminderDataItem(
+            title = this.title,
+            description = this.description,
+            location = this.location,
+            latitude = this.latitude,
+            longitude = this.longitude,
+            id = this.id
+        )
+    }
+
 }

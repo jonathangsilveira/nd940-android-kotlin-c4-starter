@@ -4,7 +4,6 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 import android.Manifest
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -21,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
@@ -135,8 +135,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     .title(poi.name)
             )
             poiMarker.showInfoWindow()
-            _viewModel.selectedPOI.value = poi
+            saveSelectedLocation(poi)
         }
+    }
+
+    private fun saveSelectedLocation(poi: PointOfInterest) {
+        _viewModel.selectedPOI.value = poi
+        _viewModel.latitude.value = poi.latLng.latitude
+        _viewModel.longitude.value = poi.latLng.longitude
+        _viewModel.reminderSelectedLocationStr.value = poi.name
     }
 
     private fun setMapStyle(map: GoogleMap?) {
@@ -169,7 +176,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     if (task.isSuccessful) {
                         // Set the map's camera position to the current location of the device.
                         val lastKnownLocation = task.result ?: return@addOnCompleteListener
-                        saveLocation(lastKnownLocation)
                         moveCameraToLocation(
                             LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
                         )
@@ -191,11 +197,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         map?.moveCamera(
             CameraUpdateFactory.newLatLngZoom(latLng, 18f)
         )
-    }
-
-    private fun saveLocation(lastKnownLocation: Location) {
-        _viewModel.latitude.value = lastKnownLocation.latitude
-        _viewModel.longitude.value = lastKnownLocation.longitude
     }
 
     companion object {

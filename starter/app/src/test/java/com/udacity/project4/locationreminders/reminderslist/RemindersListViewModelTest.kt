@@ -1,6 +1,7 @@
 package com.udacity.project4.locationreminders.reminderslist
 
 import android.app.Application
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.locationreminders.MainCoroutineRule
@@ -21,7 +22,7 @@ import org.mockito.Mockito
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [29])
+@Config(sdk = [Build.VERSION_CODES.Q])
 @ExperimentalCoroutinesApi
 class RemindersListViewModelTest {
 
@@ -91,6 +92,27 @@ class RemindersListViewModelTest {
 
         // Then assert that the result matches the expectec list value.
         assertThat(viewModel.remindersList.getOrAwaitValue(), `is`(expected))
+    }
+
+    @Test
+    fun loadReminders_error() = runBlockingTest {
+        // Tells the data source to not fail the execution.
+        dataSource.shouldFail = true
+
+        // Pause dispatcher so you can verify initial values.
+        mainCoroutineRule.pauseDispatcher()
+
+        // Load the reminders in the view model.
+        viewModel.loadReminders()
+
+        /*// Then assert that the progress indicator is shown.
+        assertThat(viewModel.showSnackBar.getOrAwaitValue(), nullValue())*/
+
+        // Execute pending coroutines actions.
+        mainCoroutineRule.resumeDispatcher()
+
+        // Then assert that the progress indicator is hidden.
+        assertThat(viewModel.showSnackBar.getOrAwaitValue(), `is`("Test Exception"))
     }
 
 }

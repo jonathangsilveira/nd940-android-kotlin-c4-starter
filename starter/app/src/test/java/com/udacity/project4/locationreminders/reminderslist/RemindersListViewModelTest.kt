@@ -8,6 +8,7 @@ import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.getOrAwaitValue
+import com.udacity.project4.utils.asDomain
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -76,16 +77,7 @@ class RemindersListViewModelTest {
     fun loadReminders_withSuccess() = runBlockingTest {
         // Tells the data source to not fail the execution.
         dataSource.shouldFail = false
-        val expected = testReminders.map {
-            ReminderDataItem(
-                title = it.title,
-                description = it.description,
-                location = it.location,
-                latitude = it.latitude,
-                longitude = it.longitude,
-                id = it.id
-            )
-        }
+        val expected = testReminders.map { it.asDomain() }
 
         // Load the reminders in the view model.
         viewModel.loadReminders()

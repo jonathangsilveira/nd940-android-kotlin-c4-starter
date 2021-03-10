@@ -17,10 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PointOfInterest
+import com.google.android.gms.maps.model.*
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
@@ -93,6 +90,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
 
+        setLongClick(googleMap)
         setPoiClick(googleMap)
         setMapStyle(googleMap)
         enableMyLocation()
@@ -129,21 +127,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun setPoiClick(map: GoogleMap?) {
         map ?: return
         map.setOnPoiClickListener { poi ->
-            val poiMarker = map.addMarker(
-                MarkerOptions()
-                    .position(poi.latLng)
-                    .title(poi.name)
-            )
-            poiMarker.showInfoWindow()
-            saveSelectedLocation(poi)
-        }
-    }
+            map.clear()
 
-    private fun saveSelectedLocation(poi: PointOfInterest) {
-        _viewModel.selectedPOI.value = poi
-        _viewModel.latitude.value = poi.latLng.latitude
-        _viewModel.longitude.value = poi.latLng.longitude
-        _viewModel.reminderSelectedLocationStr.value = poi.name
+            map.createMarker(poi.latLng, poi.name).showInfoWindow()
+            saveSelectedLocation(poi.latLng, poi.name, poi)
+        }
     }
 
     private fun setMapStyle(map: GoogleMap?) {
@@ -197,6 +185,35 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         map?.moveCamera(
             CameraUpdateFactory.newLatLngZoom(latLng, 18f)
         )
+    }
+
+    private fun setLongClick(map: GoogleMap?) {
+        map ?: return
+        map.setOnMapLongClickListener { latLng ->
+            map.clear()
+            val locationName = getString(R.string.custom_location)
+            map.createMarker(latLng, locationName).showInfoWindow()
+            saveSelectedLocation(latLng, locationName)
+        }
+    }
+
+    private fun GoogleMap.createMarker(latLng: LatLng, title: String): Marker {
+        return addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(title)
+        )
+    }
+
+    private fun saveSelectedLocation(
+        latLng: LatLng,
+        name: String,
+        poi: PointOfInterest? = null
+    ) {
+        _viewModel.selectedPOI.value = poi
+        _viewModel.latitude.value = latLng.latitude
+        _viewModel.longitude.value = latLng.longitude
+        _viewModel.reminderSelectedLocationStr.value = name
     }
 
     companion object {

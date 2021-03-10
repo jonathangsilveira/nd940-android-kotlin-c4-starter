@@ -4,7 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
-import com.google.firebase.auth.FirebaseAuth
+import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -74,7 +74,6 @@ class ReminderListFragment : BaseFragment() {
         when (item.itemId) {
             R.id.logout -> {
                 signOut()
-                navigateToAuth()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -89,7 +88,12 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun signOut() {
-        FirebaseAuth.getInstance().signOut()
+        AuthUI.getInstance()
+            .signOut(requireActivity())
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful)
+                    navigateToAuth()
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

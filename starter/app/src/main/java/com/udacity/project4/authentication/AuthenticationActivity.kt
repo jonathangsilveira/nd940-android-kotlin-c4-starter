@@ -42,11 +42,6 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     private fun launchSignInFlow() {
-        /*val customLayout = AuthMethodPickerLayout
-            .Builder(R.layout.register_layout)
-            .setGoogleButtonId(R.id.google_button)
-            .setEmailButtonId(R.id.email_button)
-            .build()*/
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()
@@ -55,7 +50,6 @@ class AuthenticationActivity : AppCompatActivity() {
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
-                //.setAuthMethodPickerLayout(customLayout)
                 .build(),
             SIGN_IN_REQUEST_CODE
         )

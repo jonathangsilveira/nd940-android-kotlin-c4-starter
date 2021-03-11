@@ -7,7 +7,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion "29.0.2"
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "com.udacity.project4"
@@ -16,6 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -38,6 +39,7 @@ android {
     buildFeatures {
         dataBinding true
     }
+
 }
 
 dependencies {
@@ -58,6 +60,7 @@ dependencies {
     //Navigation dependencies
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-rc1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
@@ -122,5 +125,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:$playServicesVersion"
     implementation "com.google.android.gms:play-services-maps:$playServicesVersion"
 
+    implementation platform("com.google.firebase:firebase-bom:$firebaseVersion")
+    implementation "com.firebaseui:firebase-ui-auth:$firebaseUiAuthVersion"
+    implementation "androidx.multidex:multidex:$multidexVersion"
 
 }

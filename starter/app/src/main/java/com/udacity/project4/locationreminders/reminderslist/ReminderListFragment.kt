@@ -1,12 +1,15 @@
 package com.udacity.project4.locationreminders.reminderslist
 
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
+import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
+import com.udacity.project4.locationreminders.ReminderDescriptionActivity
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
@@ -19,7 +22,7 @@ class ReminderListFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(
                 inflater,
@@ -62,6 +65,7 @@ class ReminderListFragment : BaseFragment() {
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
+            onReminderClicked(reminder = it)
         }
 
 //        setup the recycler view using the extension function
@@ -71,17 +75,39 @@ class ReminderListFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-//                TODO: add the logout implementation
+                signOut()
             }
         }
         return super.onOptionsItemSelected(item)
 
     }
 
+    private fun navigateToAuth() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            requireActivity().finishAndRemoveTask()
+        else
+            requireActivity().finish()
+    }
+
+    private fun signOut() {
+        AuthUI.getInstance()
+            .signOut(requireActivity())
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful)
+                    navigateToAuth()
+            }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 //        display logout as menu item
         inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    private fun onReminderClicked(reminder: ReminderDataItem) {
+        val intent =
+            ReminderDescriptionActivity.newIntent(requireContext().applicationContext, reminder)
+        startActivity(intent)
     }
 
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance"/>
+    <style name="TextAppearance.LocationReminders"/>
+    <style name="TextAppearance.LocationReminders.Title" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+</resources>

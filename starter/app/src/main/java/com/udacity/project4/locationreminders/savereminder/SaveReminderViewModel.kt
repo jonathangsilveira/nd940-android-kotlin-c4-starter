@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 
 class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) :
     BaseViewModel(app) {
+
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
     val reminderSelectedLocationStr = MutableLiveData<String>()
@@ -36,11 +37,19 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     /**
      * Validate the entered data then saves the reminder data to the DataSource
      */
-    fun validateAndSaveReminder(reminderData: ReminderDataItem) {
-        if (validateEnteredData(reminderData)) {
-            saveReminder(reminderData)
+    fun validateAndSaveReminder(reminder: ReminderDataItem) {
+        if (validateEnteredData(reminder)) {
+            saveReminder(reminder)
         }
     }
+
+    fun createReminder() = ReminderDataItem(
+        title = reminderTitle.value,
+        description = reminderDescription.value,
+        location = reminderSelectedLocationStr.value,
+        latitude = latitude.value,
+        longitude = longitude.value
+    )
 
     /**
      * Save the reminder to the data source
@@ -79,4 +88,5 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
         return true
     }
+
 }

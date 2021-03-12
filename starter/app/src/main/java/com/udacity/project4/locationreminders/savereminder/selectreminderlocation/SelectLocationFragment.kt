@@ -1,14 +1,10 @@
 package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
 
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -40,8 +36,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_select_location,
+            container,
+            false
+        )
 
         binding.viewModel = _viewModel
         binding.lifecycleOwner = this
@@ -93,10 +93,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         setLongClick(googleMap)
         setPoiClick(googleMap)
         setMapStyle(googleMap)
-        enableMyLocation()
+        //enableMyLocation()
     }
 
-    override fun onRequestPermissionsResult(
+    /*override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray) {
@@ -122,7 +122,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 REQUEST_LOCATION_PERMISSION
             )
         }
-    }
+    }*/
 
     private fun setPoiClick(map: GoogleMap?) {
         map ?: return
@@ -217,7 +217,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     companion object {
-        private const val REQUEST_LOCATION_PERMISSION = 1
         private val TAG = SelectLocationFragment::class.java.simpleName
     }
 
